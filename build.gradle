@@ -1,0 +1,22 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+  compile group: 'com.google.guava', name: 'guava', version: '11.0.2'
+  compile 'com.typesafe.akka:akka-actor_2.12:2.5.3'
+  testCompile 'com.typesafe.akka:akka-testkit_2.12:2.5.3'
+  testCompile 'junit:junit:4.12'
+}
+
+mainClassName = "pl.edu.pw.elka.sagwedt.simulator.ApartmentFinderSimulator"
+
+run {
+  standardInput = System.in
+}
