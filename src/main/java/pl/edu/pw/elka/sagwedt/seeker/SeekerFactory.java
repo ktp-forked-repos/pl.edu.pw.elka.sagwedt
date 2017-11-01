@@ -6,7 +6,7 @@ import akka.actor.ActorRef;
 /**
  * Factory for {@link Seeker}.
  */
-public class SeekerFactory
+class SeekerFactory
 {
     private static Integer seekersCreatedCount = 0;
     private final ActorRef brokerContainerRef;

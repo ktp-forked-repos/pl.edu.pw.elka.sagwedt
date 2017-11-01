@@ -10,7 +10,7 @@ import scala.util.Random;
 /**
  * Actor that encapsulates a set of {@link Broker} actors.
  */
-public class BrokerContainer extends AbstractApplicationActor
+class BrokerContainer extends AbstractApplicationActor
 {
     private static final Random RANDOM = new Random();
     private final List<ActorRef> brokerRefList;

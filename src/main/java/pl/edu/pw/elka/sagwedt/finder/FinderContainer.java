@@ -10,7 +10,7 @@ import scala.util.Random;
 /**
  * Actor that encapsulates a set of {@link Finder} actors.
  */
-public class FinderContainer extends AbstractApplicationActor
+class FinderContainer extends AbstractApplicationActor
 {
     private static final Random RANDOM = new Random();
 

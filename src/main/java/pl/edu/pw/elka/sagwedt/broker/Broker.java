@@ -16,7 +16,7 @@ import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
 /**
  * A proxy actor between {@link Finder} and Seeker.
  */
-public class Broker extends AbstractApplicationActor
+class Broker extends AbstractApplicationActor
 {
     private final ActorRef finderContainerRef;
     private final Map<FindApartmentsRequest, ActorRef> actorOfRequestMap;

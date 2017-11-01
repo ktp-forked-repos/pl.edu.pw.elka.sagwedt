@@ -12,7 +12,7 @@ import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
 /**
  * Actor responsible for finding offers.
  */
-public class Finder extends AbstractApplicationActor
+class Finder extends AbstractApplicationActor
 {
     /**
      * Package scoped factory method.

@@ -9,7 +9,7 @@ import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
 /**
  * Actor that is searching for an apartment.
  */
-public class Seeker extends AbstractApplicationActor
+class Seeker extends AbstractApplicationActor
 {
     private final ActorRef brokerContainerRef;
 

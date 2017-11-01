@@ -12,7 +12,7 @@ import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
 /**
  * Container for actors that are searching for apartments.
  */
-public class SeekerContainer extends AbstractApplicationActor
+class SeekerContainer extends AbstractApplicationActor
 {
     private final SeekerFactory seekerFactory;
     private final Set<ActorRef> seekerSet;
