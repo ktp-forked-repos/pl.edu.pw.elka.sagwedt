@@ -9,12 +9,10 @@ import akka.actor.Props;
 import pl.edu.pw.elka.sagwedt.finder.Apartment;
 import pl.edu.pw.elka.sagwedt.finder.FindApartmentsRequest;
 import pl.edu.pw.elka.sagwedt.finder.FindApartmentsResponse;
-import pl.edu.pw.elka.sagwedt.finder.Finder;
-import pl.edu.pw.elka.sagwedt.finder.FinderContainer;
 import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
 
 /**
- * A proxy actor between {@link Finder} and Seeker.
+ * A proxy actor between Finder and Seeker.
  */
 class Broker extends AbstractApplicationActor
 {
