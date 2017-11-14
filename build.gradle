@@ -11,6 +11,7 @@ repositories {
 dependencies {
   compile group: 'com.google.guava', name: 'guava', version: '11.0.2'
   compile group: 'org.jsoup', name: 'jsoup', version: '1.11.1'
+  compile group: 'org.carrot2', name: 'morfologik-polish', version: '2.1.4'
   compile 'com.typesafe.akka:akka-actor_2.12:2.5.3'
   testCompile 'com.typesafe.akka:akka-testkit_2.12:2.5.3'
   testCompile 'org.assertj:assertj-core:3.8.0'
