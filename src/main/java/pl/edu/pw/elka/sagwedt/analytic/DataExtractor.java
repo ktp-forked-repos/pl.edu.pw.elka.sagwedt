@@ -5,6 +5,8 @@ import java.util.List;
 
 class DataExtractor {
 
+	private static final String EMAIL_REGEX = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
+	
 	public static String extractType(List<Word> words){
 		// TODO Implement logic
 		return "";
@@ -36,13 +38,25 @@ class DataExtractor {
 	}
 
 	public static String extractEmail(List<Word> words){
-		// TODO Implement logic
-		return "";
+		return extractRegex(words,EMAIL_REGEX);
 	}
 	
 	public static String extractTelephone(List<Word> words){
 		// TODO Implement logic
 		return "";
+	}
+	
+	private static String extractRegex(List<Word> words, String regex){
+		for(Word w : words){
+			if(w.original.matches(regex))
+				return w.original;
+			
+			for(String meaning : w.meanings){
+				if(meaning.matches(regex))
+						return meaning;
+			}
+		}
+		return null;
 	}
 	
 	/**

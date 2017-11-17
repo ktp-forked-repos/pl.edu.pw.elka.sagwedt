@@ -12,7 +12,7 @@ import pl.edu.pw.elka.sagwedt.finder.Apartment;
  */
 public class Analytic {
 
-	public Apartment getApartment(String offerContent){
+	public static Apartment getApartment(String offerContent){
 		
 		List<Word> words = getWordText(offerContent);
 		
@@ -58,7 +58,7 @@ public class Analytic {
 		}
 	}
 
-	private static List<Word> getWordText(String original_text) {
+	public static List<Word> getWordText(String original_text) {
 		return getWordText(getStringWords(original_text));
 	}
 

@@ -2,3 +2,4 @@ connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
 eclipse.preferences.version=1
 encoding//src/main/java/pl/edu/pw/elka/sagwedt/analytic/Analytic.java=UTF-8
 encoding//src/main/java/pl/edu/pw/elka/sagwedt/analytic/DataExtractor.java=UTF-8
+encoding//src/test/java/pl/edu/pw/elka/sagwedt/analytic/DataExtractorTest.java=UTF-8
