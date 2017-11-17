@@ -1,15 +1,22 @@
 package pl.edu.pw.elka.sagwedt.analytic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class DataExtractor {
 
+	private static final ArrayList <String> typeKeywords = new ArrayList<String>(
+			Arrays.asList("mieszkanie", "dom"));		
 	private static final String EMAIL_REGEX = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
+//	private static final ArrayList <String> priceKeywords = new ArrayList<String>(
+//			Arrays.asList("zł","złotych"));
 	
 	public static String extractType(List<Word> words){
-		// TODO Implement logic
-		return "";
+		int index = getKeywordIndexInList(words,typeKeywords);
+		if (index >= 0)
+			return findMatchingMeaning(words.get(index), typeKeywords);
+		return null;
 	}
 
 	public static Integer extractPrice(List<Word> words){
@@ -57,6 +64,33 @@ class DataExtractor {
 			}
 		}
 		return null;
+	}
+	
+	private static int getKeywordIndexInList(List<Word> words, List<String> keywords){		
+		for(Word word : words){
+			for(String keyword : keywords){
+				if(word.original.equals(keyword))
+					return words.indexOf(word);
+				for(String meaning : word.meanings){
+					if(meaning.equals(keyword))
+						return words.indexOf(word);
+				}
+			}
+		}
+		return -1;
+	}
+	
+	private static String findMatchingMeaning(Word word, List<String> keywords){
+		
+		for(String keyword : keywords){
+			if(word.original.equals(keyword))
+					return keyword;
+			for(String meaning : word.meanings){
+				if(meaning.equals(keyword))
+					return keyword;
+			}
+		}
+		return null;	
 	}
 	
 	/**
