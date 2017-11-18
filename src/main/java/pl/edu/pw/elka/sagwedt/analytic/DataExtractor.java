@@ -11,7 +11,11 @@ class DataExtractor {
 	private static final String EMAIL_REGEX = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
 //	private static final ArrayList <String> priceKeywords = new ArrayList<String>(
 //			Arrays.asList("zł","złotych"));
-	
+	private static final ArrayList <String> districts = new ArrayList<String>(
+			Arrays.asList("bemowo", "białołęka", "bielany", "mokotów", "ochota", "praga-południe",
+					"praga-północ", "rembertów", "śródmieście", "targówek", "ursus", "ursynów",
+					"wawer", "wesoła", "wilanów", "włochy", "wola", "żoliborz"));
+
 	public static String extractType(List<Word> words){
 		int index = getKeywordIndexInList(words,typeKeywords);
 		if (index >= 0)
@@ -30,8 +34,11 @@ class DataExtractor {
 	}
 
 	public static String extractDistrict(List<Word> words){
-		// TODO Implement logic
-		return "";
+		int index = getKeywordIndexInList(words, districts);
+		
+		if(index >= 0)
+			return findMatchingMeaning(words.get(index), districts);
+		return null;
 	}
 
 	public static Integer extractNumberOfRooms(List<Word> words){
@@ -81,7 +88,6 @@ class DataExtractor {
 	}
 	
 	private static String findMatchingMeaning(Word word, List<String> keywords){
-		
 		for(String keyword : keywords){
 			if(word.original.equals(keyword))
 					return keyword;

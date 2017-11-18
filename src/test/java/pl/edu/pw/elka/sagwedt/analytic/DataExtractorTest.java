@@ -32,6 +32,12 @@ public class DataExtractorTest {
 	@Test
     public void testExtractType(){
         Assert.assertEquals("Extract type: house.", "dom",DataExtractor.extractType(words3));
-        Assert.assertEquals("Email type: apartment.", "mieszkanie", DataExtractor.extractType(words2));
+        Assert.assertEquals("Extract type: apartment.", "mieszkanie", DataExtractor.extractType(words2));
+    }
+	
+	@Test
+    public void testExtractDystrict(){
+        Assert.assertEquals("Extract district: Bielany.", "bielany",DataExtractor.extractDistrict(words1));
+        Assert.assertEquals("Extract district: Mokotów.", "mokotów", DataExtractor.extractDistrict(words2));
     }
 }
