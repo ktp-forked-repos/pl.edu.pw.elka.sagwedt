@@ -9,8 +9,8 @@ class DataExtractor {
 	private static final ArrayList <String> typeKeywords = new ArrayList<String>(
 			Arrays.asList("mieszkanie", "dom"));		
 	private static final String EMAIL_REGEX = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
-//	private static final ArrayList <String> priceKeywords = new ArrayList<String>(
-//			Arrays.asList("zł","złotych"));
+	private static final ArrayList <String> priceKeywords = new ArrayList<String>(
+			Arrays.asList("zł","złotych","cena"));
 	private static final ArrayList <String> districts = new ArrayList<String>(
 			Arrays.asList("bemowo", "białołęka", "bielany", "mokotów", "ochota", "praga-południe",
 					"praga-północ", "rembertów", "śródmieście", "targówek", "ursus", "ursynów",
@@ -24,8 +24,10 @@ class DataExtractor {
 	}
 
 	public static Integer extractPrice(List<Word> words){
-		// TODO Implement logic
-		return 0;
+		int index = getKeywordIndexInList(words,priceKeywords);
+		if (index >= 0)
+			return extractNumberClosestToIndex(words, index);
+		return null;
 	}
 
 	public static Integer extractArea(List<Word> words){
@@ -99,6 +101,82 @@ class DataExtractor {
 		return null;	
 	}
 	
+/**
+ * Starting at index (position of a keyword) find the nearest number in the list of words 	
+ */
+	private static Integer extractNumberClosestToIndex(List<Word> words, int index){
+		int offset = 1;
+		String originalWord;
+		
+		//expand to both directions symmetrically
+		while ((index - offset) >= 0 && (index + offset) < words.size()){
+			originalWord = words.get(index - offset).original;
+			
+			if(isInteger(originalWord)){
+				return concatNumberToLeft(words, index-offset);
+			} else{
+				originalWord = words.get(index - offset).original;
+				if(isInteger(originalWord)){
+					return concatNumberToRight(words, index-offset);
+				}
+			}
+			offset++;
+		}
+		
+		//continue to the left
+		while ((index - offset) >= 0){
+			originalWord = words.get(index - offset).original;
+			
+			if(isInteger(originalWord)){
+				return concatNumberToLeft(words, index-offset);
+			}
+				offset++;
+		}
+		
+		//continue to the right
+		while((index + offset) < words.size()){
+			originalWord = words.get(index + offset).original;
+			
+			if(isInteger(originalWord)){
+				return concatNumberToRight(words, index+offset);
+			}
+				offset++;
+		}
+		return null;
+	}
+	/**
+	 * Knowing that word under index is a number (least significant part),
+	 * check whether the number was not split into multiple words
+	 * (search to the left)
+	 */
+	private static Integer concatNumberToLeft(List<Word> words, int index){
+		String numberString = words.get(index).original;
+		for(int i = index-1; i>=0; i--){
+			if(isInteger(words.get(i).original)){
+				numberString = words.get(i).original + numberString;	
+			} else{
+				break;
+			}
+		}
+		return new Integer(numberString);
+	}
+	
+	/**
+	 * Knowing that word under index is a number (most significant part),
+	 * check whether the number was not split into multiple words
+	 * (search to the right)
+	 */
+	private static Integer concatNumberToRight(List<Word> words, int index){
+		String numberString = words.get(index).original;
+		for(int i = index+1; i < words.size(); i++){
+			if(isInteger(words.get(i).original)){
+				numberString = numberString +  words.get(i).original;	
+			} else
+				break;
+		}
+		return new Integer(numberString);
+	}
+
 	/**
 	 * 
 	 * <Moved from Analytic>
