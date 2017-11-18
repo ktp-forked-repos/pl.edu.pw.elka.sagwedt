@@ -11,10 +11,18 @@ class DataExtractor {
 	private static final String EMAIL_REGEX = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
 	private static final ArrayList <String> priceKeywords = new ArrayList<String>(
 			Arrays.asList("zł","złotych","cena"));
+	private static final ArrayList <String> areaKeywords = new ArrayList<String>(
+			Arrays.asList("m2","m²","mkw","metrów"));
 	private static final ArrayList <String> districts = new ArrayList<String>(
 			Arrays.asList("bemowo", "białołęka", "bielany", "mokotów", "ochota", "praga-południe",
 					"praga-północ", "rembertów", "śródmieście", "targówek", "ursus", "ursynów",
 					"wawer", "wesoła", "wilanów", "włochy", "wola", "żoliborz"));
+	private static final ArrayList <String> numberOfRoomsKeywords = new ArrayList<String>(
+			Arrays.asList("pokojowe", "pokoi","pokojów","pok.","pok", "pokoje"));
+	private static final ArrayList <String> buildYearKeywords = new ArrayList<String>(
+			Arrays.asList("r", "rok","roku"));
+	private static final ArrayList <String> telephoneKeywords = new ArrayList<String>(
+			Arrays.asList("tel.", "tel", "telefon","telefonu"));
 
 	public static String extractType(List<Word> words){
 		int index = getKeywordIndexInList(words,typeKeywords);
@@ -31,8 +39,10 @@ class DataExtractor {
 	}
 
 	public static Integer extractArea(List<Word> words){
-		// TODO Implement logic
-		return 0;
+		int index = getKeywordIndexInList(words,areaKeywords);
+		if (index >= 0)
+			return extractNumberClosestToIndex(words, index);
+		return null;
 	}
 
 	public static String extractDistrict(List<Word> words){
@@ -44,22 +54,28 @@ class DataExtractor {
 	}
 
 	public static Integer extractNumberOfRooms(List<Word> words){
-		// TODO Implement logic
-		return 0;
+		int index = getKeywordIndexInList(words,numberOfRoomsKeywords);
+		if (index >= 0)
+			return extractNumberClosestToIndex(words, index);
+		return null;
 	}
 
 	public static Integer extractBuildYear(List<Word> words){
-		// TODO Implement logic
-		return 0;
+		int index = getKeywordIndexInList(words,buildYearKeywords);
+		if (index >= 0)
+			return extractNumberClosestToIndex(words, index);
+		return null;
 	}
 
 	public static String extractEmail(List<Word> words){
 		return extractRegex(words,EMAIL_REGEX);
 	}
 	
-	public static String extractTelephone(List<Word> words){
-		// TODO Implement logic
-		return "";
+	public static Integer extractTelephone(List<Word> words){
+		int index = getKeywordIndexInList(words,telephoneKeywords);
+		if (index >= 0)
+			return extractNumberClosestToIndex(words, index);
+		return null;
 	}
 	
 	private static String extractRegex(List<Word> words, String regex){
@@ -78,10 +94,10 @@ class DataExtractor {
 	private static int getKeywordIndexInList(List<Word> words, List<String> keywords){		
 		for(Word word : words){
 			for(String keyword : keywords){
-				if(word.original.equals(keyword))
+				if(word.original.equalsIgnoreCase(keyword))
 					return words.indexOf(word);
 				for(String meaning : word.meanings){
-					if(meaning.equals(keyword))
+					if(meaning.equalsIgnoreCase(keyword))
 						return words.indexOf(word);
 				}
 			}
@@ -91,10 +107,10 @@ class DataExtractor {
 	
 	private static String findMatchingMeaning(Word word, List<String> keywords){
 		for(String keyword : keywords){
-			if(word.original.equals(keyword))
+			if(word.original.equalsIgnoreCase(keyword))
 					return keyword;
 			for(String meaning : word.meanings){
-				if(meaning.equals(keyword))
+				if(meaning.equalsIgnoreCase(keyword))
 					return keyword;
 			}
 		}
@@ -115,9 +131,9 @@ class DataExtractor {
 			if(isInteger(originalWord)){
 				return concatNumberToLeft(words, index-offset);
 			} else{
-				originalWord = words.get(index - offset).original;
+				originalWord = words.get(index + offset).original;
 				if(isInteger(originalWord)){
-					return concatNumberToRight(words, index-offset);
+					return concatNumberToRight(words, index+offset);
 				}
 			}
 			offset++;

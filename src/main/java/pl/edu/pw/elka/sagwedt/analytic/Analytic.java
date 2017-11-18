@@ -73,7 +73,7 @@ public class Analytic {
 	private static List<String> getStringWords(String sentence) {
 		List<String> words = new ArrayList<>();
 		//for (String word : sentence.toLowerCase(new Locale("pl")).split("[\\s\\.\\,\\?\\!]+")) {
-		for (String word : sentence.toLowerCase(new Locale("pl")).split("[\\s\\,\\?\\!]+")) {	
+		for (String word : sentence.toLowerCase(new Locale("pl")).split("[\\s\\,\\?\\!\\(\\)\\-\\:]+")) {	
 			words.add(word);
 		}
 		return words;

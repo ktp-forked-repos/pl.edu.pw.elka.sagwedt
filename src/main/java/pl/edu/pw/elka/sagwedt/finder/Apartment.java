@@ -12,7 +12,7 @@ public class Apartment
 	private Integer numberOfRooms;
 	private Integer buildYear;
 	private String email;
-	private String telephone;
+	private Integer telephone;
 	private String URL;
 
     /**
@@ -76,11 +76,11 @@ public class Apartment
 		this.email = email;
 	}
 
-	public String getTelephone() {
+	public Integer getTelephone() {
 		return telephone;
 	}
 
-	public void setTelephone(String telephone) {
+	public void setTelephone(Integer telephone) {
 		this.telephone = telephone;
 	}
 
