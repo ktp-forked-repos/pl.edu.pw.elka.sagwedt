@@ -71,8 +71,8 @@ public class DataExtractorTest {
 	
 	@Test
     public void testExtractTelephone(){
-        Assert.assertEquals("Extract telephone 1.", 123456789, DataExtractor.extractTelephone(words1).intValue());
-        Assert.assertEquals("Extract telephone 2.", 555555555, DataExtractor.extractTelephone(words2).intValue());
+        Assert.assertEquals("Extract telephone 1.", "123456789", DataExtractor.extractTelephone(words1));
+        Assert.assertEquals("Extract telephone 2.", "555555555", DataExtractor.extractTelephone(words2));
         Assert.assertEquals("Extract telephone 3.", null, DataExtractor.extractTelephone(words3));
 	}
 }

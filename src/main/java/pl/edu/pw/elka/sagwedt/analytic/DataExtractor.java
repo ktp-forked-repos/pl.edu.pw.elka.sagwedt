@@ -33,15 +33,23 @@ class DataExtractor {
 
 	public static Integer extractPrice(final List<Word> words){
 		final int index = getKeywordIndexInList(words,priceKeywords);
-		if (index >= 0)
-			return extractNumberClosestToIndex(words, index);
+		if (index >= 0){
+			String numberString = extractNumberClosestToIndex(words, index);
+			if (numberString != ""){
+				return Integer.valueOf(numberString);
+			}
+		}
 		return null;
 	}
 
 	public static Integer extractArea(final List<Word> words){
 		final int index = getKeywordIndexInList(words,areaKeywords);
-		if (index >= 0)
-			return extractNumberClosestToIndex(words, index);
+		if (index >= 0){
+			String numberString = extractNumberClosestToIndex(words, index);
+			if (numberString != ""){
+				return Integer.valueOf(numberString);
+			}
+		}
 		return null;
 	}
 
@@ -55,15 +63,24 @@ class DataExtractor {
 
 	public static Integer extractNumberOfRooms(final List<Word> words){
 		final int index = getKeywordIndexInList(words,numberOfRoomsKeywords);
-		if (index >= 0)
-			return extractNumberClosestToIndex(words, index);
+		if (index >= 0){
+			String numberString = extractNumberClosestToIndex(words, index);
+			if (numberString != ""){
+				return Integer.valueOf(numberString);
+			}
+		}
+			
 		return null;
 	}
 
 	public static Integer extractBuildYear(final List<Word> words){
 		final int index = getKeywordIndexInList(words,buildYearKeywords);
-		if (index >= 0)
-			return extractNumberClosestToIndex(words, index);
+		if (index >= 0){
+			String numberString = extractNumberClosestToIndex(words, index);
+			if (numberString != ""){
+				return Integer.valueOf(numberString);
+			}
+		}	
 		return null;
 	}
 
@@ -71,7 +88,7 @@ class DataExtractor {
 		return extractRegex(words,EMAIL_REGEX);
 	}
 
-	public static Integer extractTelephone(final List<Word> words){
+	public static String extractTelephone(final List<Word> words){
 		final int index = getKeywordIndexInList(words,telephoneKeywords);
 		if (index >= 0)
 			return extractNumberClosestToIndex(words, index);
@@ -120,7 +137,7 @@ class DataExtractor {
 /**
  * Starting at index (position of a keyword) find the nearest number in the list of words
  */
-	private static Integer extractNumberClosestToIndex(final List<Word> words, final int index){
+	private static String extractNumberClosestToIndex(final List<Word> words, final int index){
 		int offset = 1;
 		String originalWord;
 
@@ -165,7 +182,7 @@ class DataExtractor {
 	 * check whether the number was not split into multiple words
 	 * (search to the left)
 	 */
-	private static Integer concatNumberToLeft(final List<Word> words, final int index){
+	private static String concatNumberToLeft(final List<Word> words, final int index){
 		String numberString = words.get(index).original;
 		for(int i = index-1; i>=0; i--){
 			if(isInteger(words.get(i).original)){
@@ -174,7 +191,7 @@ class DataExtractor {
 				break;
 			}
 		}
-		return new Integer(numberString);
+		return numberString;
 	}
 
 	/**
@@ -182,7 +199,7 @@ class DataExtractor {
 	 * check whether the number was not split into multiple words
 	 * (search to the right)
 	 */
-	private static Integer concatNumberToRight(final List<Word> words, final int index){
+	private static String concatNumberToRight(final List<Word> words, final int index){
 		String numberString = words.get(index).original;
 		for(int i = index+1; i < words.size(); i++){
 			if(isInteger(words.get(i).original)){
@@ -190,7 +207,7 @@ class DataExtractor {
 			} else
 				break;
 		}
-		return new Integer(numberString);
+		return numberString;
 	}
 
 	/**
