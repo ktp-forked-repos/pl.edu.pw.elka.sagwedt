@@ -1,14 +1,14 @@
 package pl.edu.pw.elka.sagwedt.crawler;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import com.google.common.collect.Lists;
 
@@ -55,7 +55,7 @@ public abstract class AbstractCrawler
     /**
      * Returns offer content selector from which text is extracted.
      */
-    protected abstract String getOfferContentSelector();
+    protected abstract List<String> getOfferContentSelectors();
 
 
     /**
@@ -66,10 +66,19 @@ public abstract class AbstractCrawler
         return getOfferLinkList(page).stream()
             .limit(count)
             .map(this::getPageSafe)
-            .map(p -> p.selectFirst(getOfferContentSelector()))
-            .filter(Objects::nonNull)
-            .map(Element::text)
+            .map(this::getPageOfferAsString)
             .collect(toList());
+    }
+
+    /**
+     * Returns string of an offer from specified offer page.
+     */
+    private String getPageOfferAsString(final Document page)
+    {
+        return getOfferContentSelectors().stream()
+            .map(page::select)
+            .map(Elements::text)
+            .collect(joining(". "));
     }
 
     /**

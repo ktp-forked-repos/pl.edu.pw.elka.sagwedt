@@ -2,6 +2,7 @@ package pl.edu.pw.elka.sagwedt.crawler;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jsoup.nodes.Document;
@@ -35,10 +36,11 @@ public class OlxCrawler extends AbstractCrawler
             .map(e -> e.attr(HREF))
             .collect(toList());
     }
+
     @Override
-    protected String getOfferContentSelector()
+    protected List<String> getOfferContentSelectors()
     {
-        return OFFER_CONTENT_SELECTOR;
+        return Collections.singletonList(OFFER_CONTENT_SELECTOR);
     }
 
 }

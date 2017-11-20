@@ -2,6 +2,7 @@ package pl.edu.pw.elka.sagwedt.crawler;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jsoup.nodes.Document;
@@ -14,17 +15,19 @@ public class OtodomCrawler extends AbstractCrawler{
     private static final String OFFER_CONTENT_SELECTOR = ".article-offer .section-offer-text";
     private static final String HREF = "href";
     private static final String DATA_URL = "data-url";
-    
+
     @Override
     protected String getFirstPageHref()
     {
         return FIRST_PAGE_HREF;
     }
+
     @Override
     protected String getNextPageHref(final Document currentPage)
     {
         return currentPage.selectFirst(NEXT_PAGE_SELECTOR).attr(HREF);
     }
+
     @Override
     protected List<String> getOfferLinkList(final Document currentPage)
     {
@@ -32,9 +35,10 @@ public class OtodomCrawler extends AbstractCrawler{
             .map(e -> e.attr(DATA_URL))
             .collect(toList());
     }
+
     @Override
-    protected String getOfferContentSelector()
+    protected List<String> getOfferContentSelectors()
     {
-        return OFFER_CONTENT_SELECTOR;
+        return Collections.singletonList(OFFER_CONTENT_SELECTOR);
     }
 }
