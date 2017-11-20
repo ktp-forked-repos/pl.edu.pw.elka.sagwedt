@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,7 +15,7 @@ import com.google.common.collect.Lists;
 /**
  * Base class for crawlers.
  */
-abstract class AbstractCrawler
+public abstract class AbstractCrawler
 {
     /**
      * Method for getting specified quantity of newest offers.
@@ -66,6 +67,7 @@ abstract class AbstractCrawler
             .limit(count)
             .map(this::getPageSafe)
             .map(p -> p.selectFirst(getOfferContentSelector()))
+            .filter(Objects::nonNull)
             .map(Element::text)
             .collect(toList());
     }

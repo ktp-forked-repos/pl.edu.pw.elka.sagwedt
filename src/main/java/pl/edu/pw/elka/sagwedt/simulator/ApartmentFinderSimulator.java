@@ -1,12 +1,20 @@
 package pl.edu.pw.elka.sagwedt.simulator;
 
+import java.util.ArrayList;
+
+import com.google.common.collect.Lists;
+
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import pl.edu.pw.elka.sagwedt.broker.BrokerContainerFactory;
-import pl.edu.pw.elka.sagwedt.finder.FinderContainerFactory;
+import pl.edu.pw.elka.sagwedt.broker.BrokerContainer;
+import pl.edu.pw.elka.sagwedt.crawler.AbstractCrawler;
+import pl.edu.pw.elka.sagwedt.crawler.GumtreeCrawler;
+import pl.edu.pw.elka.sagwedt.crawler.OlxCrawler;
+import pl.edu.pw.elka.sagwedt.crawler.OtodomCrawler;
+import pl.edu.pw.elka.sagwedt.finder.FinderContainer;
 import pl.edu.pw.elka.sagwedt.printer.Printer;
 import pl.edu.pw.elka.sagwedt.seeker.SeekApartmentRequest;
-import pl.edu.pw.elka.sagwedt.seeker.SeekerContainerFactory;
+import pl.edu.pw.elka.sagwedt.seeker.SeekerContainer;
 
 /**
  * Entry class for simulation.
@@ -19,10 +27,11 @@ public class ApartmentFinderSimulator {
     public static void main(final String[] args)
     {
         final ActorSystem system = ActorSystem.create();
-        final ActorRef printer = system.actorOf(Printer.props());
-        final ActorRef finderContainerRef = new FinderContainerFactory().getFinderContainer(system, printer, 10);
-        final ActorRef brokerContainerRef = new BrokerContainerFactory().getBrokerContainer(system, printer, 5, finderContainerRef);
-        final ActorRef seekerContainerRef = new SeekerContainerFactory().getSeekerContainer(system, printer, 100, brokerContainerRef);
+        final ActorRef printer = system.actorOf(Printer.props(), "Printer");
+        final ArrayList<AbstractCrawler> cralwerList = Lists.newArrayList(new GumtreeCrawler(), new OlxCrawler(), new OtodomCrawler());
+        final ActorRef finderContainerRef = system.actorOf(FinderContainer.props(cralwerList, printer), "FinderContainer");
+        final ActorRef brokerContainerRef = system.actorOf(BrokerContainer.props(finderContainerRef, printer), "BrokerContainer");
+        final ActorRef seekerContainerRef = system.actorOf(SeekerContainer.props(brokerContainerRef, printer), "SeekerContainer");
         for(int i = 0; i < 10; ++i)
         {
             seekerContainerRef.tell(new SeekApartmentRequest(), ActorRef.noSender());

@@ -12,33 +12,28 @@ import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
 /**
  * Container for actors that are searching for apartments.
  */
-class SeekerContainer extends AbstractApplicationActor
+public class SeekerContainer extends AbstractApplicationActor
 {
-    private final SeekerFactory seekerFactory;
+    private final ActorRef brokerContainerRef;
     private final Set<ActorRef> seekerSet;
-    private final int seekersLimit;
+    private int seekersCreatedCount = 0;
 
     /**
      * Package scoped factory method.
      */
-    static Props props(final SeekerFactory seekerFactory,
-        final int seekersLimit, final ActorRef printer)
+    public static Props props(final ActorRef brokerContainerRef, final ActorRef printerRef)
     {
         return Props.create(SeekerContainer.class,
-            () -> new SeekerContainer(seekerFactory, seekersLimit, printer));
+            () -> new SeekerContainer(brokerContainerRef, printerRef));
     }
 
     /**
      * Private constructor to force the use of {@link SeekerContainer#props()}.
-     * @param seekerFactory factory for creating {@link Seeker}.
-     * @param seekersLimit how many seekers can be handled simultanously
      */
-    private SeekerContainer(final SeekerFactory seekerFactory,
-            final int seekersLimit, final ActorRef printer)
+    private SeekerContainer(final ActorRef brokerContainerRef, final ActorRef printerRef)
     {
-        super(printer);
-        this.seekerFactory = seekerFactory;
-        this.seekersLimit = seekersLimit;
+        super(printerRef);
+        this.brokerContainerRef = brokerContainerRef;
         this.seekerSet = Sets.newHashSet();
     }
 
@@ -59,13 +54,14 @@ class SeekerContainer extends AbstractApplicationActor
      */
     private void handle(final SeekApartmentRequest seekApartmentRequest)
     {
-        if(seekerSet.size() >= seekersLimit)
+        if(seekerSet.size() >= 1000)
         {
             log("To many seeker requests, I'm stopping.");
             //TODO handle rejection
             throw new RuntimeException("Seekers limit exceeded");
         }
-        final ActorRef seeker = seekerFactory.getSeeker(getContext());
+        final String name = "Seeker" + seekersCreatedCount++;
+        final ActorRef seeker = context().actorOf(Seeker.props(brokerContainerRef, printer), name);
         seekerSet.add(seeker);
         log("Created " + getName(seeker) + " to look for apartment ");
         seeker.tell(seekApartmentRequest, getSelf());
@@ -79,5 +75,6 @@ class SeekerContainer extends AbstractApplicationActor
     {
         log("Killing " + getName(getSender()) + ", because apartment found.");
         getSender().tell(PoisonPill.getInstance(), getSelf());
+        seekerSet.remove(getSender());
     }
 }

@@ -1,38 +1,60 @@
 package pl.edu.pw.elka.sagwedt.finder;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import pl.edu.pw.elka.sagwedt.crawler.AbstractCrawler;
 import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
 import scala.util.Random;
 
 /**
  * Actor that encapsulates a set of {@link Finder} actors.
  */
-class FinderContainer extends AbstractApplicationActor
+public class FinderContainer extends AbstractApplicationActor
 {
     private static final Random RANDOM = new Random();
-
-    /** Set of {@link Finder} actor references in this {@link FinderContainer}*/
     private final List<ActorRef> finderRefList;
 
     /**
      * Package scoped factory method.
      */
-    static Props props(final List<ActorRef> finderRefList, final ActorRef printer)
+    public static Props props(final List<AbstractCrawler> crawlerList, final ActorRef printer)
     {
         return Props.create(FinderContainer.class,
-            () -> new FinderContainer(finderRefList, printer));
+            () -> new FinderContainer(crawlerList, printer));
     }
 
     /**
      * Private constructor to force the use of {@link FinderContainer#props(int)} method.
      */
-    private FinderContainer(final List<ActorRef> finderRefList, final ActorRef printer)
+    private FinderContainer(final List<AbstractCrawler> crawlerList, final ActorRef printer)
     {
         super(printer);
-        this.finderRefList = finderRefList;
+        this.finderRefList = createFinderList(crawlerList, printer);
+    }
+
+    /**
+     * Create list of finder actors.
+     */
+    private ArrayList<ActorRef> createFinderList(final List<AbstractCrawler> crawlerList, final ActorRef printer)
+    {
+        if (crawlerList.size() < 1)
+        {
+            throw new RuntimeException("At least one crawler required");
+        }
+        final ArrayList<ActorRef> result = Lists.newArrayList();
+        int finderCount = 0;
+        for(final AbstractCrawler crawler : crawlerList)
+        {
+            final String finderName = "Finder" + finderCount++;
+            final ActorRef finderRef = context().actorOf(Finder.props(printer, crawler), finderName);
+            result.add(finderRef);
+        }
+        return result;
     }
 
     /**

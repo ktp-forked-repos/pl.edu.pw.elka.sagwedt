@@ -9,7 +9,7 @@ import pl.edu.pw.elka.sagwedt.printer.PrintRequest;
  */
 public abstract class AbstractApplicationActor extends AbstractActor
 {
-    private final ActorRef printer;
+    protected final ActorRef printer;
 
     protected AbstractApplicationActor(final ActorRef printer)
     {

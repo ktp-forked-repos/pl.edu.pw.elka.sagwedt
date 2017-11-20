@@ -1,12 +1,13 @@
 package pl.edu.pw.elka.sagwedt.finder;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import static java.util.stream.Collectors.toList;
 
-import com.google.common.collect.Lists;
+import java.util.List;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import pl.edu.pw.elka.sagwedt.analytic.Analytic;
+import pl.edu.pw.elka.sagwedt.crawler.AbstractCrawler;
 import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
 
 /**
@@ -14,21 +15,25 @@ import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
  */
 class Finder extends AbstractApplicationActor
 {
+    private final AbstractCrawler crawler;
+    private List<Apartment> apartmentCache;
+
     /**
      * Package scoped factory method.
      */
-    static Props props(final ActorRef printer)
+    static Props props(final ActorRef printerRef, final AbstractCrawler crawler)
     {
         return Props.create(Finder.class,
-            () -> new Finder(printer));
+            () -> new Finder(printerRef, crawler));
     }
 
     /**
      * Private constructor to force the use of {@link Finder#props()} method.
      */
-    private Finder(final ActorRef printer)
+    private Finder(final ActorRef printerRef, final AbstractCrawler crawler)
     {
-        super(printer);
+        super(printerRef);
+        this.crawler = crawler;
     }
 
     /**
@@ -48,30 +53,22 @@ class Finder extends AbstractApplicationActor
     private void handle(final FindApartmentsRequest request)
     {
         log("Looking for apartments on behalf of " + getName(getSender()));
-        final List<Apartment> apartmentList = getMockApartmentList(request);
+        final List<Apartment> apartmentList = getApartmentList(request);
         final FindApartmentsResponse response = new FindApartmentsResponse(request, apartmentList);
         getSender().tell(response, getSelf());
     }
 
     /**
-     * Gets mock apartment list.
-     *
-     * @deprecated Should be replaced by a method that performs a real search.
+     * Gets apartment list.
      */
-    @Deprecated
-    private List<Apartment> getMockApartmentList(final FindApartmentsRequest msg)
+    private List<Apartment> getApartmentList(final FindApartmentsRequest msg)
     {
-        try
+        if(apartmentCache == null)
         {
-            TimeUnit.SECONDS.sleep(2);
+            apartmentCache = crawler.getOfferList(100).stream()
+                .map(Analytic::getApartment)
+                .collect(toList());
         }
-        catch (final InterruptedException e)
-        {
-            //do nothing
-        }
-        return Lists.newArrayList(
-            new Apartment(),
-            new Apartment(),
-            new Apartment());
+        return apartmentCache;
     }
 }
