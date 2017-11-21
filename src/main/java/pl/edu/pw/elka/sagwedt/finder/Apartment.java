@@ -7,7 +7,7 @@ public class Apartment
 {
 	private String type;
 	private Integer price;
-	private Integer area; 
+	private Integer area;
 	private String district;
 	private Integer numberOfRooms;
 	private Integer buildYear;
@@ -24,7 +24,7 @@ public class Apartment
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
@@ -32,7 +32,7 @@ public class Apartment
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(final Integer price) {
 		this.price = price;
 	}
 
@@ -40,7 +40,7 @@ public class Apartment
 		return area;
 	}
 
-	public void setArea(Integer area) {
+	public void setArea(final Integer area) {
 		this.area = area;
 	}
 
@@ -48,7 +48,7 @@ public class Apartment
 		return district;
 	}
 
-	public void setDistrict(String district) {
+	public void setDistrict(final String district) {
 		this.district = district;
 	}
 
@@ -56,7 +56,7 @@ public class Apartment
 		return numberOfRooms;
 	}
 
-	public void setNumberOfRooms(Integer numberOfRooms) {
+	public void setNumberOfRooms(final Integer numberOfRooms) {
 		this.numberOfRooms = numberOfRooms;
 	}
 
@@ -64,7 +64,7 @@ public class Apartment
 		return buildYear;
 	}
 
-	public void setBuildYear(Integer buildYear) {
+	public void setBuildYear(final Integer buildYear) {
 		this.buildYear = buildYear;
 	}
 
@@ -72,7 +72,7 @@ public class Apartment
 		return email;
 	}
 
-	public void setEmail(String email) {
+	public void setEmail(final String email) {
 		this.email = email;
 	}
 
@@ -80,7 +80,7 @@ public class Apartment
 		return telephone;
 	}
 
-	public void setTelephone(String telephone) {
+	public void setTelephone(final String telephone) {
 		this.telephone = telephone;
 	}
 
@@ -88,7 +88,7 @@ public class Apartment
 		return URL;
 	}
 
-	public void setURL(String uRL) {
+	public void setURL(final String uRL) {
 		URL = uRL;
 	}
 }

@@ -9,12 +9,14 @@ import akka.actor.Props;
 import pl.edu.pw.elka.sagwedt.finder.Apartment;
 import pl.edu.pw.elka.sagwedt.finder.FindApartmentsRequest;
 import pl.edu.pw.elka.sagwedt.finder.FindApartmentsResponse;
-import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
+import pl.edu.pw.elka.sagwedt.finder.FinderContainer;
+import pl.edu.pw.elka.sagwedt.infrastructure.AbstractAppActor;
+import pl.edu.pw.elka.sagwedt.infrastructure.TimeoutExceededResponse;
 
 /**
  * A proxy actor between Finder and Seeker.
  */
-class Broker extends AbstractApplicationActor
+class Broker extends AbstractAppActor
 {
     private final ActorRef finderContainerRef;
     private final Map<FindApartmentsRequest, ActorRef> actorOfRequestMap;
@@ -50,7 +52,8 @@ class Broker extends AbstractApplicationActor
     {
         return receiveBuilder()
             .match(SelectApartmentRequest.class, this::handle)
-            .match(FindApartmentsResponse.class, this::handle)
+            .match(FindApartmentsResponse.class, this::stopWaitingForResponse, this::handle)
+            .match(TimeoutExceededResponse.class, this::stopWaitingForResponse, this::handle)
             .build();
     }
 
@@ -65,6 +68,7 @@ class Broker extends AbstractApplicationActor
         actorOfRequestMap.put(findApartmentsRequest, getSender());
         requestMap.put(findApartmentsRequest, selectApartmentRequest);
         finderContainerRef.tell(findApartmentsRequest, getSelf());
+        waitForResponse(findApartmentsRequest);
     }
 
     /**
@@ -94,5 +98,17 @@ class Broker extends AbstractApplicationActor
             throw new RuntimeException("Apartments not found!");
         }
         return response.getApartmentList().get(0);
+    }
+
+    /**
+     * Handle message telling this actor to stop waiting for response.
+     */
+    private void handle(final TimeoutExceededResponse<FindApartmentsRequest> message)
+    {
+        final ActorRef requestSender = actorOfRequestMap.remove(message.getRequest());
+        final SelectApartmentRequest request = requestMap.remove(message.getRequest());
+        final SelectApartmentResponse response = new SelectApartmentResponse(request, null);
+        log("Timeout exceeded while waiting for response to find apartment for " + getName(requestSender));
+        requestSender.tell(response, getSelf());
     }
 }

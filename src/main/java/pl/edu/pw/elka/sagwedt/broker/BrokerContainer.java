@@ -6,13 +6,14 @@ import org.assertj.core.util.Lists;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
-import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
+import pl.edu.pw.elka.sagwedt.infrastructure.AbstractAppActor;
+import pl.edu.pw.elka.sagwedt.infrastructure.Configuration;
 import scala.util.Random;
 
 /**
  * Actor that encapsulates a set of {@link Broker} actors.
  */
-public class BrokerContainer extends AbstractApplicationActor
+public class BrokerContainer extends AbstractAppActor
 {
     private static final Random RANDOM = new Random();
     private final List<ActorRef> brokerRefList;
@@ -33,7 +34,7 @@ public class BrokerContainer extends AbstractApplicationActor
     private BrokerContainer(final ActorRef finderContainerRef, final ActorRef printer)
     {
         super(printer);
-        this.brokerRefList = getBrokerRefList(10, finderContainerRef);
+        this.brokerRefList = getBrokerRefList(Configuration.BROKERS_TO_CREATE_COUNT, finderContainerRef);
     }
 
     private List<ActorRef> getBrokerRefList(final int howManyBrokers, final ActorRef finderContainerRef)

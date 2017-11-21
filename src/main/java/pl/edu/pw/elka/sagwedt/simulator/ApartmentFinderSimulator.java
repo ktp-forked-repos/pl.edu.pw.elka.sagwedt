@@ -12,6 +12,7 @@ import pl.edu.pw.elka.sagwedt.crawler.GumtreeCrawler;
 import pl.edu.pw.elka.sagwedt.crawler.OlxCrawler;
 import pl.edu.pw.elka.sagwedt.crawler.OtodomCrawler;
 import pl.edu.pw.elka.sagwedt.finder.FinderContainer;
+import pl.edu.pw.elka.sagwedt.infrastructure.Configuration;
 import pl.edu.pw.elka.sagwedt.printer.Printer;
 import pl.edu.pw.elka.sagwedt.seeker.SeekApartmentRequest;
 import pl.edu.pw.elka.sagwedt.seeker.SeekerContainer;
@@ -32,7 +33,7 @@ public class ApartmentFinderSimulator {
         final ActorRef finderContainerRef = system.actorOf(FinderContainer.props(cralwerList, printer), "FinderContainer");
         final ActorRef brokerContainerRef = system.actorOf(BrokerContainer.props(finderContainerRef, printer), "BrokerContainer");
         final ActorRef seekerContainerRef = system.actorOf(SeekerContainer.props(brokerContainerRef, printer), "SeekerContainer");
-        for(int i = 0; i < 10; ++i)
+        for(int i = 0; i < Configuration.SEEKERS_TO_CREATE_DURING_SIMULATION_COUNT; ++i)
         {
             seekerContainerRef.tell(new SeekApartmentRequest(), ActorRef.noSender());
         }

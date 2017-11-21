@@ -8,13 +8,13 @@ import com.google.common.collect.Lists;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import pl.edu.pw.elka.sagwedt.crawler.AbstractCrawler;
-import pl.edu.pw.elka.sagwedt.infrastructure.AbstractApplicationActor;
+import pl.edu.pw.elka.sagwedt.infrastructure.AbstractAppActor;
 import scala.util.Random;
 
 /**
  * Actor that encapsulates a set of {@link Finder} actors.
  */
-public class FinderContainer extends AbstractApplicationActor
+public class FinderContainer extends AbstractAppActor
 {
     private static final Random RANDOM = new Random();
     private final List<ActorRef> finderRefList;
