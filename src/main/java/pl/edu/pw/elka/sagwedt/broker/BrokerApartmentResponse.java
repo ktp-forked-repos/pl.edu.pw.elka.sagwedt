@@ -4,13 +4,13 @@ import pl.edu.pw.elka.sagwedt.finder.Apartment;
 import pl.edu.pw.elka.sagwedt.infrastructure.AppResponse;
 
 /**
- * A response to {@link SelectApartmentRequest}.
+ * A response to {@link BrokerApartmentRequest}.
  */
-public class SelectApartmentResponse extends AppResponse<SelectApartmentRequest>
+public class BrokerApartmentResponse extends AppResponse<BrokerApartmentRequest>
 {
     private final Apartment apartment;
 
-    SelectApartmentResponse(final SelectApartmentRequest request, final Apartment apartment)
+    BrokerApartmentResponse(final BrokerApartmentRequest request, final Apartment apartment)
     {
         super(request);
         this.apartment = apartment;

@@ -14,6 +14,7 @@ public class Apartment
 	private String email;
 	private String telephone;
 	private String URL;
+	private Integer size;
 
     /**
      * Default constructor.
@@ -91,4 +92,15 @@ public class Apartment
 	public void setURL(final String uRL) {
 		URL = uRL;
 	}
+	
+	
+	public Integer getSize() {
+		return size;
+	}
+
+	public void setSize(final Integer s) {
+		this.size = s;
+	}
+	
+	
 }

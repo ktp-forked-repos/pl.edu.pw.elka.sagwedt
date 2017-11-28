@@ -60,15 +60,15 @@ public class BrokerContainer extends AbstractAppActor
     public Receive createReceive()
     {
         return receiveBuilder()
-            .match(SelectApartmentRequest.class, this::handle)
+            .match(BrokerApartmentRequest.class, this::handle)
             .build();
     }
 
     /**
-     * Handle method for {@link SelectApartmentRequest}.
+     * Handle method for {@link BrokerApartmentRequest}.
      * Delegates the task to one of brokers.
      */
-    private void handle(final SelectApartmentRequest msg)
+    private void handle(final BrokerApartmentRequest msg)
     {
         final ActorRef broker = getRandomBroker();
         log("Delegating " + getName(getSender()) + " to " + getName(broker));

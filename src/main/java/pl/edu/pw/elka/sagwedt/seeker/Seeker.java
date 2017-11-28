@@ -6,8 +6,9 @@ import com.google.common.collect.Maps;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
-import pl.edu.pw.elka.sagwedt.broker.SelectApartmentRequest;
-import pl.edu.pw.elka.sagwedt.broker.SelectApartmentResponse;
+import pl.edu.pw.elka.sagwedt.broker.BrokerApartmentRequest;
+import pl.edu.pw.elka.sagwedt.broker.BrokerApartmentResponse;
+import pl.edu.pw.elka.sagwedt.finder.Apartment;
 import pl.edu.pw.elka.sagwedt.infrastructure.AbstractAppActor;
 import pl.edu.pw.elka.sagwedt.infrastructure.TimeoutExceededResponse;
 
@@ -17,7 +18,7 @@ import pl.edu.pw.elka.sagwedt.infrastructure.TimeoutExceededResponse;
 class Seeker extends AbstractAppActor
 {
     private final ActorRef brokerContainerRef;
-    private final Map<SelectApartmentRequest, SeekApartmentRequest> requestMap;
+    private final Map<BrokerApartmentRequest, SeekApartmentRequest> requestMap;
 
     /**
      * Package scoped factory method.
@@ -48,7 +49,7 @@ class Seeker extends AbstractAppActor
     {
         return receiveBuilder()
             .match(SeekApartmentRequest.class, this::handle)
-            .match(SelectApartmentResponse.class, this::stopWaitingForResponse, this::handle)
+            .match(BrokerApartmentResponse.class, this::stopWaitingForResponse, this::handle)
             .match(TimeoutExceededResponse.class, this::stopWaitingForResponse, this::handle)
             .build();
     }
@@ -59,20 +60,21 @@ class Seeker extends AbstractAppActor
     private void handle(final SeekApartmentRequest request)
     {
         log("Want to seek for apartment, asking " + getName(brokerContainerRef) + " for help");
-        final SelectApartmentRequest selectApartmentRequest = new SelectApartmentRequest();
+        final BrokerApartmentRequest selectApartmentRequest = new BrokerApartmentRequest(request);
         requestMap.put(selectApartmentRequest, request);
         brokerContainerRef.tell(selectApartmentRequest, getSelf());
         waitForResponse(selectApartmentRequest);
     }
 
     /**
-     * Handling of {@link SelectApartmentResponse}.
+     * Handling of {@link BrokerApartmentResponse}.
      */
-    private void handle(final SelectApartmentResponse selectApartmentResponse)
+    private void handle(final BrokerApartmentResponse selectApartmentResponse)
     {
         if(selectApartmentResponse.isApartmentFound())
         {
             log("Received apartment offer from " + getName(getSender()) + ", telling " + getName(getContext().getParent()) + " that I'm done.");
+            logFoundApartament(selectApartmentResponse.getApartment());
         }
         else
         {
@@ -82,11 +84,23 @@ class Seeker extends AbstractAppActor
         final SeekApartmentResponse seekApartmentResponse = new SeekApartmentResponse(seekApartmentRequest);
         getContext().getParent().tell(seekApartmentResponse, getSelf());
     }
+    
+    private void logFoundApartament(final Apartment apartament) {
+    	if(apartament.getType() != null) log("Type: " + apartament.getType());
+    	if(apartament.getPrice() != null) log("Price: " + apartament.getPrice());
+    	if(apartament.getArea() != null) log("Area: " + apartament.getArea());
+    	if(apartament.getDistrict() != null) log("District: " + apartament.getDistrict());
+    	if(apartament.getNumberOfRooms() != null) log("NumberOfRooms: " + apartament.getDistrict());
+    	if(apartament.getBuildYear() != null) log("BuildYear: " + apartament.getBuildYear());
+    	if(apartament.getEmail() != null) log("Email: " + apartament.getEmail());
+    	if(apartament.getTelephone() != null) log("Telephone: " + apartament.getTelephone());
+    	if(apartament.getURL() != null) log("URL: " + apartament.getURL());
+    }
 
     /**
      * Handling of await timeout for response exceeded message.
      */
-    private void handle(final TimeoutExceededResponse<SelectApartmentRequest> response)
+    private void handle(final TimeoutExceededResponse<BrokerApartmentRequest> response)
     {
         log("Timeout exceeded while waiting for response to select apartment, telling " + getName(getContext().getParent()) + " that I'm done.");
         final SeekApartmentRequest seekApartmentRequest = requestMap.remove(response.getRequest());

@@ -26,6 +26,7 @@ public class Analytic {
 		apartment.setBuildYear(DataExtractor.extractBuildYear(words));
 		apartment.setEmail(DataExtractor.extractEmail(words));		
 		apartment.setTelephone(DataExtractor.extractTelephone(words));
+		apartment.setSize(DataExtractor.getM2(words));
 		
 		// TODO URL must be passed from the crawler
 		apartment.setURL("");

@@ -36,7 +36,11 @@ class DataExtractor {
 		if (index >= 0){
 			String numberString = extractNumberClosestToIndex(words, index);
 			if (numberString != ""){
+				try {
 				return Integer.valueOf(numberString);
+				}catch(NumberFormatException  e) {
+					return null;
+				}
 			}
 		}
 		return null;
@@ -47,7 +51,11 @@ class DataExtractor {
 		if (index >= 0){
 			String numberString = extractNumberClosestToIndex(words, index);
 			if (numberString != ""){
+				try {
 				return Integer.valueOf(numberString);
+				}catch(NumberFormatException  e) {
+					return null;
+				}
 			}
 		}
 		return null;
@@ -66,7 +74,11 @@ class DataExtractor {
 		if (index >= 0){
 			String numberString = extractNumberClosestToIndex(words, index);
 			if (numberString != ""){
+				try {
 				return Integer.valueOf(numberString);
+				}catch(NumberFormatException  e) {
+					return null;
+				}
 			}
 		}
 			
@@ -78,7 +90,11 @@ class DataExtractor {
 		if (index >= 0){
 			String numberString = extractNumberClosestToIndex(words, index);
 			if (numberString != ""){
+				try {
 				return Integer.valueOf(numberString);
+				}catch(NumberFormatException  e) {
+					return null;
+				}
 			}
 		}	
 		return null;
@@ -217,6 +233,7 @@ class DataExtractor {
 
 	public static Integer getM2(final List<Word> words) {
 		final List<Word> wordsCloseToMeters = getWordsCloseToMetersInfo(words);
+		if (wordsCloseToMeters == null) return null;
 		for(final Word w : wordsCloseToMeters) {
 			if( isInteger(w.original))
 				return Integer.parseInt(w.original);

@@ -7,8 +7,19 @@ import pl.edu.pw.elka.sagwedt.infrastructure.AppRequest;
  */
 public class SeekApartmentRequest extends AppRequest
 {
+	private Integer min_area = 0;
+	
     public SeekApartmentRequest()
     {
-        //currently empty
+    	
+    }
+    
+    public SeekApartmentRequest(Integer main_area_)
+    {
+    	min_area = main_area_;
+    }
+    
+    public Integer getMinArea() {
+    	return min_area;
     }
 }
