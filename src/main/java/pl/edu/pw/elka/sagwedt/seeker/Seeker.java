@@ -90,7 +90,7 @@ class Seeker extends AbstractAppActor
     	if(apartament.getPrice() != null) log("Price: " + apartament.getPrice());
     	if(apartament.getArea() != null) log("Area: " + apartament.getArea());
     	if(apartament.getDistrict() != null) log("District: " + apartament.getDistrict());
-    	if(apartament.getNumberOfRooms() != null) log("NumberOfRooms: " + apartament.getDistrict());
+    	if(apartament.getNumberOfRooms() != null) log("NumberOfRooms: " + apartament.getNumberOfRooms());
     	if(apartament.getBuildYear() != null) log("BuildYear: " + apartament.getBuildYear());
     	if(apartament.getEmail() != null) log("Email: " + apartament.getEmail());
     	if(apartament.getTelephone() != null) log("Telephone: " + apartament.getTelephone());

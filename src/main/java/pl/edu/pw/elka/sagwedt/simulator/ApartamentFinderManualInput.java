@@ -30,14 +30,24 @@ public class ApartamentFinderManualInput {
         final ActorRef brokerContainerRef = system.actorOf(BrokerContainer.props(finderContainerRef, printer), "BrokerContainer");
         final ActorRef seekerContainerRef = system.actorOf(SeekerContainer.props(brokerContainerRef, printer), "SeekerContainer");
         
-		System.out.println("Podaj minimalny metraz:");
-		
-	    Scanner sc = new Scanner(System.in);
-	    int min_meters = sc.nextInt();
-	    sc.close();
-	    
-        seekerContainerRef.tell(new SeekApartmentRequest(min_meters), ActorRef.noSender());
         
+        Scanner sc = new Scanner(System.in);
+
+		System.out.println("Choose min area:");
+	    int minMeters = sc.nextInt();
+	    
+	    System.out.println("Choose max area:");
+	    int maxMeters = sc.nextInt();
+	    
+		System.out.println("Choose min price:");
+	    int minPrice = sc.nextInt();
+	    
+	    System.out.println("Choose max price:");
+	    int maxPrice = sc.nextInt();
+	    
+        seekerContainerRef.tell(new SeekApartmentRequest(minMeters, maxMeters, minPrice, maxPrice), ActorRef.noSender());
+
+        sc.close();
 
 	}
 

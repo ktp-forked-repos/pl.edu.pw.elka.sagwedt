@@ -8,15 +8,34 @@ import pl.edu.pw.elka.sagwedt.seeker.SeekApartmentRequest;
  */
 public class BrokerApartmentRequest extends AppRequest
 {
-	private Integer min_area = 0;
+	private Integer minArea = 0;
+	private Integer maxArea = Integer.MAX_VALUE;
+	private Integer minPrice = 0;
+	private Integer maxPrice = Integer.MAX_VALUE;
+
 	
     public BrokerApartmentRequest(SeekApartmentRequest prevRequest)
     {
-        min_area = prevRequest.getMinArea();
+        minArea = prevRequest.getMinArea();
+        maxArea = prevRequest.getMaxArea();
+    	minPrice = prevRequest.getMinPrice();
+    	maxPrice = prevRequest.getMaxPrice();
     }
     
     public Integer getMinArea() {
-    	return min_area;
+    	return minArea;
+    }
+    
+    public Integer getMaxArea() {
+    	return maxArea;
+    }
+    
+    public Integer getMinPrice() {
+    	return minPrice;
+    }
+    
+    public Integer getMaxPrice() {
+    	return maxPrice;
     }
     
     

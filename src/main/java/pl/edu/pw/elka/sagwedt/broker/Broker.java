@@ -102,12 +102,15 @@ class Broker extends AbstractAppActor
         return response.getApartmentList().get(0);
     }
     
+    /**
+     * Selects the best apartment from apartment list.
+     */    
     private Apartment getBestApartment(final FindApartmentsResponse response)
     {
     	FindApartmentsRequest findApartmentRequest = response.getRequest();
-    	BrokerApartmentRequest selectApartmentRequest = requestMap.get(findApartmentRequest);
+    	BrokerApartmentRequest brokerApartmentRequest = requestMap.get(findApartmentRequest);
     	List<Apartment> apartmentList = response.getApartmentList();
-    	apartmentList = getApartmentsWithMinArea(apartmentList, selectApartmentRequest.getMinArea());
+    	apartmentList = getApartmentsThatMeetExpectations(apartmentList, brokerApartmentRequest);
         if(apartmentList.isEmpty())
         {
             //TODO implement apartments not found handling
@@ -116,13 +119,30 @@ class Broker extends AbstractAppActor
         return apartmentList.get(0);
     }
     
-    private List<Apartment> getApartmentsWithMinArea(List<Apartment> input_list, Integer min_area){
+    /**
+     * Selects all apartments that meet expectations
+     */  
+    private List<Apartment> getApartmentsThatMeetExpectations(final List<Apartment> input_list, final BrokerApartmentRequest request){
     	List<Apartment> newlist = new ArrayList<>();
     	for(Apartment a : input_list) {
-    		if(a.getArea() != null && a.getArea() >= min_area)
+    		if(apartementMeetsExpectations(a, request))
     			newlist.add(a);
     	}
     	return newlist;
+    }
+    
+    /**
+     * Returns true if the Apartment meets expectations
+     */  
+    private boolean apartementMeetsExpectations(final Apartment apartment, final BrokerApartmentRequest request) {
+    	if(apartment.getPrice() == null || apartment.getArea() == null) return false;
+    	
+    	if(request.getMaxPrice() > apartment.getPrice() && 
+    			request.getMinPrice() <= apartment.getPrice() &&
+    			request.getMaxArea() > apartment.getArea() &&
+    			request.getMinArea() <= apartment.getArea())  
+    				return true;
+    	return false;
     }
 
     /**
