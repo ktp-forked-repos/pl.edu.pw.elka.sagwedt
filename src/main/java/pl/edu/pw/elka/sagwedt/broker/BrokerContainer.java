@@ -72,7 +72,7 @@ public class BrokerContainer extends AbstractAppActor
     {
         final ActorRef broker = getRandomBroker();
         log("Delegating " + getName(getSender()) + " to " + getName(broker));
-        broker.tell(msg, getSender());
+        broker.forward(msg, getContext());
     }
 
     /**

@@ -2,8 +2,8 @@ package pl.edu.pw.elka.sagwedt.infrastructure;
 
 import java.util.concurrent.TimeUnit;
 
+import akka.util.Timeout;
 import scala.concurrent.duration.Duration;
-import scala.concurrent.duration.FiniteDuration;
 
 /**
  * Application configuration values.
@@ -11,10 +11,10 @@ import scala.concurrent.duration.FiniteDuration;
  */
 public class Configuration
 {
-    public static final FiniteDuration RESPONSE_TIMOUT_DURATION = Duration.create(200, TimeUnit.SECONDS);
-    public static final Integer SEEKERS_TO_CREATE_DURING_SIMULATION_COUNT = 10;
+    public static final Timeout RESPONSE_TIMOUT = Timeout.durationToTimeout(Duration.create(200, TimeUnit.SECONDS));
+    public static final Integer SEEKERS_TO_CREATE_DURING_SIMULATION_COUNT = 1;
     public static final Integer MAX_SEEKERS_IN_CONTAINER_COUNT = 100;
-    public static final Integer OFFERS_TO_FETCH_COUNT = 100;
+    public static final Integer OFFERS_TO_FETCH_COUNT = 10;
     public static final Integer BROKERS_TO_CREATE_COUNT = 5;
 
     private Configuration()

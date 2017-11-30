@@ -6,12 +6,14 @@ import java.util.List;
 
 import org.junit.Test;
 
+import pl.edu.pw.elka.sagwedt.finder.Offer;
+
 public class OlxCrawlerTest
 {
     @Test
     public void testGetOfferListInt_connectionSuccess() throws Exception
     {
-        final List<String> offerList = new OlxCrawler().getOfferList(1);
+        final List<Offer> offerList = new OlxCrawler().getOfferList(1);
         assertThat(offerList).hasSize(1);
     }
 }

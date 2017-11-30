@@ -1,14 +1,11 @@
 package pl.edu.pw.elka.sagwedt.seeker;
 
-import pl.edu.pw.elka.sagwedt.infrastructure.AppResponse;
-
 /**
  * Response to {@link SeekApartmentRequest}.
  */
-public class SeekApartmentResponse extends AppResponse<SeekApartmentRequest>
+public class SeekApartmentResponse
 {
-    SeekApartmentResponse(final SeekApartmentRequest request)
+    SeekApartmentResponse()
     {
-        super(request);
     }
 }

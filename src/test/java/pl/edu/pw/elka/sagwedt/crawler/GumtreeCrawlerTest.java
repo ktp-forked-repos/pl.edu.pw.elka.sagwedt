@@ -6,12 +6,14 @@ import java.util.List;
 
 import org.junit.Test;
 
+import pl.edu.pw.elka.sagwedt.finder.Offer;
+
 public class GumtreeCrawlerTest
 {
     @Test
     public void testGetOfferListInt_connectionSuccess() throws Exception
     {
-        final List<String> offers = new GumtreeCrawler().getOfferList(1);
+        final List<Offer> offers = new GumtreeCrawler().getOfferList(1);
         assertThat(offers).hasSize(1);
     }
 }

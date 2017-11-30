@@ -75,7 +75,7 @@ public class FinderContainer extends AbstractAppActor
     private void handle(final FindApartmentsRequest msg)
     {
         final ActorRef finder = getRandomFinder();
-        finder.tell(msg, getSender());
+        finder.forward(msg, getContext());
         log("Delegating " + getName(getSender()) + " to " + getName(finder));
     }
 

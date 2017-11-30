@@ -2,22 +2,19 @@ package pl.edu.pw.elka.sagwedt.finder;
 
 import java.util.List;
 
-import pl.edu.pw.elka.sagwedt.infrastructure.AppResponse;
-
 /**
  * Message returned to sender after {@link Finder} received {@link FindApartmentsRequest}.
  *
  */
-public class FindApartmentsResponse extends AppResponse<FindApartmentsRequest>
+public class FindApartmentsResponse
 {
     private final List<Apartment> apartmentList;
 
     /**
      * Package scoped constructor.
      */
-    FindApartmentsResponse(final FindApartmentsRequest request, final List<Apartment> apartmentList)
+    FindApartmentsResponse(final List<Apartment> apartmentList)
     {
-        super(request);
         this.apartmentList = apartmentList;
     }
 

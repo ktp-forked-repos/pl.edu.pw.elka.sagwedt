@@ -54,7 +54,7 @@ class Finder extends AbstractAppActor
     private void handle(final FindApartmentsRequest request)
     {
         final List<Apartment> apartmentList = getApartmentList(request);
-        final FindApartmentsResponse response = new FindApartmentsResponse(request, apartmentList);
+        final FindApartmentsResponse response = new FindApartmentsResponse(apartmentList);
         getSender().tell(response, getSelf());
         log("Returning found apartments to " + getName(getSender()));
     }
