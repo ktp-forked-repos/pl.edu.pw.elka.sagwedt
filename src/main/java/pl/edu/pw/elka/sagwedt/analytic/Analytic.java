@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import pl.edu.pw.elka.sagwedt.finder.Apartment;
+import pl.edu.pw.elka.sagwedt.finder.Offer;
 
 /*
  * Class which is supposed to allow analysis on the text 
@@ -12,9 +13,9 @@ import pl.edu.pw.elka.sagwedt.finder.Apartment;
  */
 public class Analytic {
 
-	public static Apartment getApartment(String offerContent){
+	public static Apartment getApartment(Offer offer){
 		
-		List<Word> words = getWordText(offerContent);
+		List<Word> words = getWordText(offer.getOfferText());
 		
 		Apartment apartment = new Apartment();
 		
@@ -29,7 +30,7 @@ public class Analytic {
 		apartment.setSize(DataExtractor.getM2(words));
 		
 		// TODO URL must be passed from the crawler
-		apartment.setURL("");
+		apartment.setURL(offer.getOfferURL());
 		
 		return apartment;
 	}

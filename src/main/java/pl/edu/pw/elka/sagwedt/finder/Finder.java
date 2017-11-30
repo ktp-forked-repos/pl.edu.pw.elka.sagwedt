@@ -68,8 +68,8 @@ class Finder extends AbstractAppActor
         {
             log("Fetching apartments from web");
             apartmentCache = crawler.getOfferList(Configuration.OFFERS_TO_FETCH_COUNT).stream()
-                .map(Analytic::getApartment)
-                .collect(toList());
+               .map(Analytic::getApartment)
+               .collect(toList());
         }
         return apartmentCache;
     }

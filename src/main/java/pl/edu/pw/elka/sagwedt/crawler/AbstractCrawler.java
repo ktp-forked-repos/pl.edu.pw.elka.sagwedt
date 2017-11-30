@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jsoup.Jsoup;
@@ -11,6 +12,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import com.google.common.collect.Lists;
+
+import pl.edu.pw.elka.sagwedt.finder.Offer;
 
 /**
  * Base class for crawlers.
@@ -23,14 +26,14 @@ public abstract class AbstractCrawler
      * @param count how many offers should be fetched.
      * @return list of offers content
      */
-    public List<String> getOfferList(final int count)
+    public List<Offer> getOfferList(final int count)
     {
-        final List<String> results = Lists.newArrayList();
+        final List<Offer> results = Lists.newArrayList();
         String pageHref = getFirstPageHref();
         while(results.size() < count)
         {
             final Document currentPage = getPageSafe(pageHref);
-            final List<String> newOffers = getOfferList(currentPage, count - results.size());
+            final List<Offer> newOffers = getOfferList(currentPage, count - results.size());
             results.addAll(newOffers);
             pageHref = getNextPageHref(currentPage);
         }
@@ -61,13 +64,14 @@ public abstract class AbstractCrawler
     /**
      * Method for getting offers of specified page.
      */
-    private List<String> getOfferList(final Document page, final int count)
+    private List<Offer> getOfferList(final Document page, final int count)
     {
-        return getOfferLinkList(page).stream()
-            .limit(count)
-            .map(this::getPageSafe)
-            .map(this::getPageOfferAsString)
-            .collect(toList());
+    	List<Document> offerDocuments = getOfferLinkList(page).stream().limit(count).map(this::getPageSafe).collect(toList());
+    	List<Offer> offerList = new ArrayList<Offer>();
+    	for(Document d : offerDocuments) {
+    		offerList.add(new Offer(getPageOfferAsString(d), d.baseUri()));
+    	}
+    	return offerList;
     }
 
     /**
