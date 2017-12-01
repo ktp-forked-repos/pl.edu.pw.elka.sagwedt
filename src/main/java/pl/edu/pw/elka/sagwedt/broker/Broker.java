@@ -9,7 +9,6 @@ import akka.pattern.PatternsCS;
 import pl.edu.pw.elka.sagwedt.finder.Apartment;
 import pl.edu.pw.elka.sagwedt.finder.FindApartmentsRequest;
 import pl.edu.pw.elka.sagwedt.finder.FindApartmentsResponse;
-import pl.edu.pw.elka.sagwedt.finder.FinderContainer;
 import pl.edu.pw.elka.sagwedt.infrastructure.AbstractAppActor;
 import pl.edu.pw.elka.sagwedt.infrastructure.Configuration;
 
@@ -18,26 +17,26 @@ import pl.edu.pw.elka.sagwedt.infrastructure.Configuration;
  */
 class Broker extends AbstractAppActor
 {
-    private final ActorRef finderContainerRef;
+    private final ActorRef finder;
 
     /**
      * Package scoped factory method.
-     * @param finderContainerRef {@link FinderContainer} to be used for apartment search
+     * @param finder to be used for apartment search
      */
-    static Props props(final ActorRef finderContainerRef, final ActorRef printer)
+    static Props props(final ActorRef finder, final ActorRef printer)
     {
         return Props.create(Broker.class,
-            () -> new Broker(finderContainerRef, printer));
+            () -> new Broker(finder, printer));
     }
 
     /**
      * Private constructor to force the use of {@link Broker#props()} method.
-     * @param finderContainerRef {@link FinderContainer} to be used for apartment search
+     * @param finder to be used for apartment search
      */
-    private Broker(final ActorRef finderContainerRef, final ActorRef printer)
+    private Broker(final ActorRef finder, final ActorRef printer)
     {
         super(printer);
-        this.finderContainerRef = finderContainerRef;
+        this.finder = finder;
     }
 
     /**
@@ -53,18 +52,18 @@ class Broker extends AbstractAppActor
 
     /**
      * Handle method for {@link BrokerApartmentRequest}.
-     * Asks {@link FinderContainer} to find apartments.
+     * Asks {@link #finder} to find apartments.
      */
     private void handle(final BrokerApartmentRequest brokerRequest)
     {
         final ActorRef sender = getSender();
-        log("Received request from " + getName(sender) + ", asking " + getName(finderContainerRef) + " for apartment offers");
+        log("Received request from " + getName(sender) + ", asking " + getName(finder) + " for apartment offers");
         final FindApartmentsRequest findRequest = new FindApartmentsRequest();
-        PatternsCS.ask(finderContainerRef, findRequest, Configuration.RESPONSE_TIMOUT)
+        PatternsCS.ask(finder, findRequest, Configuration.RESPONSE_TIMOUT)
             .handle((response, exception) -> {
                 if(exception != null) {
                     final BrokerApartmentResponse brokerResponse = new BrokerApartmentResponse(null);
-                    log("Timeout exceeded while waiting for response to find apartment for " + getName(sender));
+                    log("Timeout exceeded while waiting for " + getName(finder) + "'s response to find apartment for " + getName(sender));
                     sender.tell(brokerResponse, getSelf());
                     return false;
                 }
@@ -109,11 +108,9 @@ class Broker extends AbstractAppActor
     private boolean apartementMeetsExpectations(final Apartment apartment, final BrokerApartmentRequest request) {
     	if(apartment.getPrice() == null || apartment.getArea() == null) return false;
 
-    	if(request.getMaxPrice() > apartment.getPrice() &&
-    			request.getMinPrice() <= apartment.getPrice() &&
-    			request.getMaxArea() > apartment.getArea() &&
-    			request.getMinArea() <= apartment.getArea())
-    				return true;
-    	return false;
+    	return request.getMaxPrice() > apartment.getPrice() &&
+			request.getMinPrice() <= apartment.getPrice() &&
+			request.getMaxArea() > apartment.getArea() &&
+			request.getMinArea() <= apartment.getArea();
     }
 }

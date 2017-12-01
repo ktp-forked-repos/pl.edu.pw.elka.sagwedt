@@ -22,18 +22,18 @@ class Finder extends AbstractAppActor
     /**
      * Package scoped factory method.
      */
-    static Props props(final ActorRef printerRef, final AbstractCrawler crawler)
+    static Props props(final ActorRef printer, final AbstractCrawler crawler)
     {
         return Props.create(Finder.class,
-            () -> new Finder(printerRef, crawler));
+            () -> new Finder(printer, crawler));
     }
 
     /**
      * Private constructor to force the use of {@link Finder#props()} method.
      */
-    private Finder(final ActorRef printerRef, final AbstractCrawler crawler)
+    private Finder(final ActorRef printer, final AbstractCrawler crawler)
     {
-        super(printerRef);
+        super(printer);
         this.crawler = crawler;
     }
 

@@ -16,28 +16,27 @@ import scala.util.Random;
 public class BrokerContainer extends AbstractAppActor
 {
     private static final Random RANDOM = new Random();
-    private final List<ActorRef> brokerRefList;
+    private final List<ActorRef> brokerList;
 
     /**
      * Package scoped factory method.
-     * @param brokerRefList list of brokers to contain
      */
-    public static Props props(final ActorRef finderContainerRef, final ActorRef printer)
+    public static Props props(final ActorRef finder, final ActorRef printer)
     {
         return Props.create(BrokerContainer.class,
-            () -> new BrokerContainer(finderContainerRef, printer));
+            () -> new BrokerContainer(finder, printer));
     }
 
     /**
      * Private constructor to force the use of {@link BrokerContainer#props()};
      */
-    private BrokerContainer(final ActorRef finderContainerRef, final ActorRef printer)
+    private BrokerContainer(final ActorRef finder, final ActorRef printer)
     {
         super(printer);
-        this.brokerRefList = getBrokerRefList(Configuration.BROKERS_TO_CREATE_COUNT, finderContainerRef);
+        this.brokerList = getBrokerList(Configuration.BROKERS_TO_CREATE_COUNT, finder);
     }
 
-    private List<ActorRef> getBrokerRefList(final int howManyBrokers, final ActorRef finderContainerRef)
+    private List<ActorRef> getBrokerList(final int howManyBrokers, final ActorRef finderContainerRef)
     {
         if(howManyBrokers < 1)
         {
@@ -80,7 +79,7 @@ public class BrokerContainer extends AbstractAppActor
      */
     private ActorRef getRandomBroker()
     {
-        final int randomInt = RANDOM.nextInt(brokerRefList.size());
-        return brokerRefList.get(randomInt);
+        final int randomInt = RANDOM.nextInt(brokerList.size());
+        return brokerList.get(randomInt);
     }
 }

@@ -12,24 +12,24 @@ import pl.edu.pw.elka.sagwedt.infrastructure.Configuration;
  */
 public class SeekerContainer extends AbstractAppActor
 {
-    private final ActorRef brokerContainerRef;
+    private final ActorRef broker;
     private int seekersCreatedCount = 0;
 
     /**
      * Package scoped factory method.
      */
-    public static Props props(final ActorRef brokerContainerRef, final ActorRef printerRef)
+    public static Props props(final ActorRef broker, final ActorRef printer)
     {
-        return Props.create(SeekerContainer.class, () -> new SeekerContainer(brokerContainerRef, printerRef));
+        return Props.create(SeekerContainer.class, () -> new SeekerContainer(broker, printer));
     }
 
     /**
      * Private constructor to force the use of {@link SeekerContainer#props()}.
      */
-    private SeekerContainer(final ActorRef brokerContainerRef, final ActorRef printerRef)
+    private SeekerContainer(final ActorRef broker, final ActorRef printer)
     {
-        super(printerRef);
-        this.brokerContainerRef = brokerContainerRef;
+        super(printer);
+        this.broker = broker;
     }
 
     /**
@@ -38,7 +38,9 @@ public class SeekerContainer extends AbstractAppActor
     @Override
     public Receive createReceive()
     {
-        return receiveBuilder().match(SeekApartmentRequest.class, this::handle).build();
+        return receiveBuilder()
+            .match(SeekApartmentRequest.class, this::handle)
+            .build();
     }
 
     /**
@@ -52,7 +54,7 @@ public class SeekerContainer extends AbstractAppActor
             throw new RuntimeException("Seekers limit exceeded");
         }
         final String name = "Seeker" + seekersCreatedCount++;
-        final ActorRef seeker = context().actorOf(Seeker.props(brokerContainerRef, printer), name);
+        final ActorRef seeker = context().actorOf(Seeker.props(broker, printer), name);
         log("Created " + getName(seeker) + " to look for apartment ");
         PatternsCS.ask(seeker, seekApartmentRequest, Configuration.RESPONSE_TIMOUT).handle((response, exception) ->
         {

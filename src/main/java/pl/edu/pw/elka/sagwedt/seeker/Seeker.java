@@ -14,29 +14,28 @@ import pl.edu.pw.elka.sagwedt.infrastructure.Configuration;
  */
 class Seeker extends AbstractAppActor
 {
-    private final ActorRef brokerContainerRef;
+    private final ActorRef broker;
 
     /**
      * Package scoped factory method.
      *
-     * @param brokerContainerRef
-     *            reference to broker container
+     * @param broker reference to broker
      */
-    static Props props(final ActorRef brokerContainerRef, final ActorRef printer)
+    static Props props(final ActorRef broker, final ActorRef printer)
     {
-        return Props.create(Seeker.class, () -> new Seeker(brokerContainerRef, printer));
+        return Props.create(Seeker.class, () -> new Seeker(broker, printer));
     }
 
     /**
      * Private constructor to force the use of {@link Seeker#props()}.
      *
-     * @param brokerContainerRef
+     * @param broker
      *            reference to broker container
      */
-    private Seeker(final ActorRef brokerContainerRef, final ActorRef printer)
+    private Seeker(final ActorRef broker, final ActorRef printer)
     {
         super(printer);
-        this.brokerContainerRef = brokerContainerRef;
+        this.broker = broker;
     }
 
     /**
@@ -45,7 +44,9 @@ class Seeker extends AbstractAppActor
     @Override
     public Receive createReceive()
     {
-        return receiveBuilder().match(SeekApartmentRequest.class, this::handle).build();
+        return receiveBuilder()
+                .match(SeekApartmentRequest.class, this::handle)
+                .build();
     }
 
     /**
@@ -53,16 +54,14 @@ class Seeker extends AbstractAppActor
      */
     private void handle(final SeekApartmentRequest seekRequest)
     {
-        final ActorRef sender = getSender();
         final ActorRef parent = getContext().getParent();
-        log("Want to seek for apartment, asking " + getName(brokerContainerRef) + " for help");
+        log("Want to seek for apartment, asking " + getName(broker) + " for help");
         final BrokerApartmentRequest brokerRequest = new BrokerApartmentRequest(seekRequest);
-        PatternsCS.ask(brokerContainerRef, brokerRequest, Configuration.RESPONSE_TIMOUT).handle((response, exception) ->
+        PatternsCS.ask(broker, brokerRequest, Configuration.RESPONSE_TIMOUT).handle((response, exception) ->
         {
             if (exception != null)
             {
-                log("Timeout exceeded while waiting for response to select apartment, telling " + getName(parent)
-                        + " that I'm done.");
+                log("Timeout exceeded while waiting for response to select apartment, telling " + getName(parent) + " that I'm done.");
                 final SeekApartmentResponse seekResponse = new SeekApartmentResponse();
                 parent.tell(seekResponse, getSelf());
                 return false;
@@ -70,18 +69,17 @@ class Seeker extends AbstractAppActor
             final BrokerApartmentResponse brokerResponse = (BrokerApartmentResponse) response;
             if (brokerResponse.isApartmentFound())
             {
-                log("Received apartment offer from " + getName(sender) + ", telling " + getName(parent) + " that I'm done.");
+                log("Received apartment offer from " + getName(broker) + ", telling " + getName(parent) + " that I'm done.");
                 logFoundApartament(brokerResponse.getApartment());
             }
             else
             {
-                log("Didn't receive apartment offer from " + getName(sender) + ", telling " + getName(parent) + " that I'm done.");
+                log("Didn't receive apartment offer from " + getName(broker) + ", telling " + getName(parent) + " that I'm done.");
             }
             final SeekApartmentResponse seekResponse = new SeekApartmentResponse();
             parent.tell(seekResponse, getSelf());
             return true;
         });
-        brokerContainerRef.tell(brokerRequest, getSelf());
     }
 
     private void logFoundApartament(final Apartment apartament)

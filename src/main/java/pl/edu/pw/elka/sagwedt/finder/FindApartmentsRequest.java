@@ -5,7 +5,6 @@ package pl.edu.pw.elka.sagwedt.finder;
  */
 public class FindApartmentsRequest
 {
-    // currently empty, TODO add search parameters
 
     public FindApartmentsRequest()
     {
